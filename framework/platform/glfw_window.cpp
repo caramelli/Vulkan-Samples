@@ -1,4 +1,4 @@
-/* Copyright (c) 2019-2020, Arm Limited and Contributors
+/* Copyright (c) 2019-2021, Arm Limited and Contributors
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -272,6 +272,10 @@ void mouse_button_callback(GLFWwindow *window, int button, int action, int /*mod
 GlfwWindow::GlfwWindow(Platform &platform, uint32_t width, uint32_t height) :
     Window(platform, width, height)
 {
+#if defined(VK_USE_PLATFORM_XLIB_KHR)
+	glfwInitHint(GLFW_X11_XCB_VULKAN_SURFACE, false);
+#endif
+
 	if (!glfwInit())
 	{
 		throw std::runtime_error("GLFW couldn't be initialized.");
@@ -292,6 +296,8 @@ GlfwWindow::GlfwWindow(Platform &platform, uint32_t width, uint32_t height) :
 	{
 		height = static_cast<uint32_t>(options.get_int("--height"));
 	}
+
+	resize(width, height);
 
 	handle = glfwCreateWindow(width, height, platform.get_app().get_name().c_str(), NULL, NULL);
 
