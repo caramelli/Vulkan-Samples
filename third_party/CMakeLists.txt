@@ -129,6 +129,10 @@ add_library(volk STATIC ${VOLK_FILES})
 target_link_libraries(volk PUBLIC vulkan)
 
 target_include_directories(volk PUBLIC ${VOLK_DIR})
+if (VKB_WSI_SELECTION STREQUAL WAYLAND)
+    pkg_check_modules(WAYLAND wayland-client QUIET)
+    target_include_directories(volk PUBLIC ${WAYLAND_INCLUDE_DIRS})
+endif()
 
 set_property(TARGET volk PROPERTY FOLDER "ThirdParty")
 
